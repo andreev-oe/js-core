@@ -1,10 +1,5 @@
 const hasArrays = (arr) => {
-    for (const arrElement of arr) {
-        if (Array.isArray(arrElement)) {
-            return true
-        }
-    }
-    return false
+    return arr.some((arrElement) => Array.isArray(arrElement))
 };
 
 // const data1 = [false, true, [1, 2], {}, [], 1, 0, NaN];
