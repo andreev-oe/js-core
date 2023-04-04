@@ -2,7 +2,7 @@ function capitalize(str){
     return str
         .toLowerCase()
         .split(' ')
-        .map((element) => (element = element[0].toUpperCase() + element.slice(1)))
+        .map((element) => (element[0].toUpperCase() + element.slice(1)))
         .join(' ')
 }
 
