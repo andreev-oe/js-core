@@ -1,7 +1,7 @@
 function partition (array, callback = (element) => Boolean(element)) {
     const trueArray  = []
     const falseArray  = []
-    array.map((element) => {
+    array.forEach((element) => {
         callback(element) ? trueArray.push(element) : falseArray.push(element)
     })
     return [trueArray, falseArray]
