@@ -33,3 +33,4 @@ import './module-1/1-4/1-4-6.js'
 // module 2
 import './module-2/2-2/2-2-2.js'
 import './module-2/2-2/2-2-3.js'
+import './module-2/2-2/2-2-5.js'
