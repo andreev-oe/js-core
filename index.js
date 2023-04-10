@@ -41,3 +41,4 @@ import './module-2/2-2/2-2-12.js'
 import './module-2/2-2/2-2-14.js'
 
 import './module-2/2-3/2-3-2.js'
+import './module-2/2-3/2-3-4.js'
