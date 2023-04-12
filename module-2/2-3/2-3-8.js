@@ -2,7 +2,7 @@ Object.create = function(proto, propertiesObject) {
     if ((typeof proto === 'undefined' && typeof propertiesObject === 'undefined') || typeof  proto !== 'object'){
         throw new TypeError('prototype is null or is not object')
     }
-    const newObject= new Object()
+    const newObject= {}
     Object.setPrototypeOf(newObject, proto)
     if (typeof propertiesObject !== 'undefined') {
         Object.defineProperties(newObject, propertiesObject)
