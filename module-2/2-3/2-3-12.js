@@ -32,7 +32,7 @@ class EventEmitter {
         }
         if (this.eventsOnce[eventName]) {
             this.eventsOnce[eventName].forEach((eventCallback) => eventCallback.call(null, ...args))
-            this.eventsOnce = {}
+            delete this.eventsOnce[eventName]
         }
     }
 }
@@ -46,7 +46,7 @@ class BroadcastEventEmitter extends EventEmitter {
             for (const eventKey in this.eventsOnce) {
                 this.eventsOnce[eventKey].forEach((eventCallback) => eventCallback.call(null, ...args))
             }
-            this.eventsOnce = {}
+            delete this.eventsOnce[eventName]
         }
     }
 }
