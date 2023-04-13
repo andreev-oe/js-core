@@ -47,3 +47,6 @@ import './module-2/2-3/2-3-8.js'
 import './module-2/2-3/2-3-10.js'
 import './module-2/2-3/2-3-11.js'
 import './module-2/2-3/2-3-12.js'
+
+// module 3
+import './module-3/3-2/3-2-2.js'
