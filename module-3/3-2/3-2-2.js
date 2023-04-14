@@ -1,25 +1,37 @@
 function arrayToCsv(data) {
     let resultString = ''
-    const regExp1 = /["]/gm
-    data.forEach((element) => {
-        element.forEach((item,index) => {
+    const regExpQuotes = /"/gm
+    const regExpComma = /,/
+    data.forEach((element, i) => {
+        element.forEach((item, j) => {
             if (typeof item !== 'string' && typeof item !== 'number') {
                 throw new Error('Unexpected value')
             }
-            if (typeof item === 'string') {
-                element[index] = item.replace(regExp1, '\"\"')
-                element[index] = `\"${element[index]}\"`
+            if (regExpQuotes.test(item)) {
+                element[j] = `\"${item.replace(regExpQuotes, '\"\"')}\"`
+            }
+            if (regExpComma.test(item)) {
+                element[j] = `\"${item}\"`
             }
         })
-        resultString = resultString + `${element.toString()}\n`
+        if (data[data.length-1] === data[i]) {
+            resultString = resultString + element
+        } else {
+            resultString = resultString + `${element}\n`
+        }
     })
     return resultString
 }
 
-arrayToCsv([['"text"', 'other "long" text']])
-arrayToCsv([[1, 2], ['a', 'b']])
-// 1,2
-// a,b
-arrayToCsv([[1, 2], ['a,b', 'c,d']])
-// 1,2
-// "a,b","c,d"
+// arrayToCsv([['1,2,3','4,5'],[',,,,', 1]])
+// // "1,2,3","4,5"
+// // ",,,,",1
+// arrayToCsv([['"text"', 'other "long" text']])
+// // """text""","other ""long"" text"
+// arrayToCsv([[1, 2],[3,4],['a', 'b']])
+// // 1,2
+// // 3,4
+// // a,b
+// arrayToCsv([[1, 2], ['a,b', 'c,d']])
+// // 1,2
+// // "a,b","c,d"
