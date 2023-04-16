@@ -5,13 +5,11 @@ function getUsersInfo(onLoad) {
         if (ids.length === 0) {
             return onLoad([])
         }
-        const usersInfo = new Array(ids.length)
-        let count = 0;
+        let usersInfo = new Array(ids.length)
         ids.forEach((id, index) => {
             getUserInfo(id, info => {
                 usersInfo[index] = info
-                count++
-                if (count === usersInfo.length) {
+                if (index === ids.length - 1) {
                     onLoad(usersInfo)
                 }
             })
