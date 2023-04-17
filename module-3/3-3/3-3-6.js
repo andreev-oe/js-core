@@ -46,35 +46,17 @@ const api = {
 };
 
 function increaseSalary() {
-    let poorestEmployee
     return new Promise((resolve) => {
         api.getEmployees()
-            .then((employees) => {
-                employees.forEach((employee) => {
-                    if (!poorestEmployee) {
-                        poorestEmployee = employee
-                    }
-                    if (employee.salary < poorestEmployee.salary) {
-                        poorestEmployee = employee
-                    }
-                })
-                return poorestEmployee
-            })
-            .then((employee) => {
-                api.setEmployeeSalary(employee.id, employee.salary * 1.2)
-                    .catch((error) => {
-                        api.notifyAdmin(error)
-                        return resolve(false)
-                    })
-                    .then(() => {
-                        api.notifyEmployee(employee.id, `Hello, ${employee.name}! Congratulations, your new salary is ${employee.salary * 1.2}!`)
-                        return resolve(true)
-                    })
-            })
+            .then((employees) => employees.reduce((acc, employee) => employee.salary < acc.salary ? employee : acc))
+            .then((employee) => api.setEmployeeSalary(employee.id, employee.salary * 1.2))
+            .catch((error) => !api.notifyAdmin(error))
+            .then((employee) => employee ? resolve(api.notifyEmployee(employee.id, `Hello, ${employee.name}! Congratulations, your new salary is ${employee.salary}!`)) : resolve(employee))
     })
 }
 
 console.log(increaseSalary())
+
 
 // Получает данные по всем работникам
 // Находит работника с наименьшей зарплатой
