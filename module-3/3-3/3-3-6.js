@@ -55,8 +55,7 @@ function increaseSalary() {
     })
 }
 
-console.log(increaseSalary())
-
+// increaseSalary()
 
 // Получает данные по всем работникам
 // Находит работника с наименьшей зарплатой
