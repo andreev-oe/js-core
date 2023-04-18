@@ -2,11 +2,11 @@ function promisesInSeries(asyncFns) {
     const runAsync = async () => {
         try {
             let prevData = undefined
-            for (let i = 0; i < asyncFns.length; i++) {
-                if (i === asyncFns.length - 1) {
-                    return await asyncFns[i](prevData)
+            for (const [index, asyncFn] of asyncFns.entries()) {
+                if (index === asyncFns.length - 1) {
+                    return await asyncFn(prevData)
                 }
-                prevData = await asyncFns[i](prevData)
+                prevData = await asyncFn(prevData)
             }
         } catch (e) {
             return undefined
