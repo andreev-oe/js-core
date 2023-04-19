@@ -1,13 +1,10 @@
 const throttle = (fn, throttleTime) => {
-    let isProcessing = true
+    let isProcessing = false
     return function(...data) {
-        if (isProcessing) {
-            isProcessing = false
+        if (!isProcessing) {
+            isProcessing = true
             fn.apply(this, data)
-            setTimeout(() => {
-                setTimeout(fn, 0)
-                isProcessing = true
-            }, throttleTime)
+            setTimeout(() => isProcessing = false, throttleTime)
         }
     }
 };
@@ -21,3 +18,4 @@ const throttle = (fn, throttleTime) => {
 //
 // const intervalId = setInterval(throttledFn, 100);
 // setTimeout(() => clearInterval(intervalId), 1000); // удаляем интервал через 10 вызовов
+// console.log(counter); // 3
