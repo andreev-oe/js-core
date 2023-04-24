@@ -38,21 +38,29 @@ const createRepoCard = (evt) => {
         const repoName = document.createElement('p');
         const repoOwner = document.createElement('p');
         const repoStars = document.createElement('p');
+        const closeButtonElement = document.createElement('div')
+
+        closeButtonElement.classList.add('close-card')
+        repoCard.classList.add('repo-card')
 
         repoName.textContent = `Name: ${name}`
-        repoOwner.textContent = `Name: ${login}`
-        repoStars.textContent = `Name: ${stargazersCount}`
+        repoOwner.textContent = `Owner: ${login}`
+        repoStars.textContent = `Stars: ${stargazersCount}`
 
+        repoCard.append(closeButtonElement)
         repoCard.append(repoName, repoOwner, repoStars)
         cardsContainerElement.append(repoCard)
     }
 }
 
 const createDropDownMenuItem = (repo) => {
+
+
     const repoNameElement = document.createElement('li')
     repoNameElement.textContent = repo.name
     repoNameElement.classList.add('repo-name')
     repoNameElement.dataset.repoName = repo.name
+
     dropDownMenuElement.append(repoNameElement)
 }
 
@@ -73,6 +81,11 @@ const searchFieldHandler = (evt) => {
 
 searchFieldElement.addEventListener('input', debounce(searchFieldHandler, DEBOUNCE_TIME))
 dropDownMenuElement.addEventListener('click', createRepoCard)
+cardsContainerElement.addEventListener('click', (evt) => {
+    if (evt.target.classList.value === 'close-card') {
+        evt.target.parentElement.remove()
+    }
+})
 
 const iop = [{
     name: 'NAME1',
