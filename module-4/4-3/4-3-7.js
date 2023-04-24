@@ -2,7 +2,8 @@ const DEBOUNCE_TIME = 500
 const DROP_DOWN_REPOS_COUNT = 5
 const searchFieldElement = document.querySelector('.search-field')
 const cardsContainerElement = document.querySelector('.cards-container')
-const dropDownMenuElement = document.querySelector('.drop-down-menu')
+const dropDownMenuElement = document.querySelector('.search-result')
+let currentRepos
 
 const debounce = (fn, debounceTime) => {
     let debounceTimer
@@ -30,22 +31,21 @@ const getRepos = async (repoName) => {
 }
 
 const createRepoCard = (evt) => {
-    const datasetName = iop.filter((repo) => repo.name === evt.target.dataset.repoName)
-    console.log(datasetName)
+    const datasetName = currentRepos.find((repo) => repo.id === Number(evt.target.dataset.repoId))
     if (datasetName) {
-        let {name, owner: {login}, stargazersCount} = datasetName[0]
+        let {name, owner: {login}, stargazers_count} = datasetName
         const repoCard = document.createElement('div');
         const repoName = document.createElement('p');
         const repoOwner = document.createElement('p');
         const repoStars = document.createElement('p');
         const closeButtonElement = document.createElement('div')
 
-        closeButtonElement.classList.add('close-card')
+        closeButtonElement.classList.add('repo-card-close')
         repoCard.classList.add('repo-card')
 
         repoName.textContent = `Name: ${name}`
         repoOwner.textContent = `Owner: ${login}`
-        repoStars.textContent = `Stars: ${stargazersCount}`
+        repoStars.textContent = `Stars: ${stargazers_count}`
 
         repoCard.append(closeButtonElement)
         repoCard.append(repoName, repoOwner, repoStars)
@@ -53,27 +53,33 @@ const createRepoCard = (evt) => {
     }
 }
 
-const createDropDownMenuItem = (repo) => {
+const closeRepoCard = (evt) => {
+    if (evt.target.classList.value === 'repo-card-close') {
+        evt.target.parentElement.remove()
+    }
+}
 
-
+const createSearchResultItem = (repo) => {
     const repoNameElement = document.createElement('li')
     repoNameElement.textContent = repo.name
     repoNameElement.classList.add('repo-name')
-    repoNameElement.dataset.repoName = repo.name
-
+    repoNameElement.dataset.repoId = repo.id
     dropDownMenuElement.append(repoNameElement)
 }
 
 const showReposList = (reposList) => {
     dropDownMenuElement.innerHTML = ""
     reposList.forEach((repo) => {
-        createDropDownMenuItem(repo)
+        createSearchResultItem(repo)
 })}
 
 const searchFieldHandler = (evt) => {
     if (evt.target.value.trim()) {
         getRepos(evt.target.value)
-            .then((reposList) => showReposList(reposList))
+            .then((reposList) => {
+                currentRepos = reposList
+                showReposList(reposList)
+            })
     } else {
         dropDownMenuElement.innerHTML = ""
     }
@@ -81,30 +87,4 @@ const searchFieldHandler = (evt) => {
 
 searchFieldElement.addEventListener('input', debounce(searchFieldHandler, DEBOUNCE_TIME))
 dropDownMenuElement.addEventListener('click', createRepoCard)
-cardsContainerElement.addEventListener('click', (evt) => {
-    if (evt.target.classList.value === 'close-card') {
-        evt.target.parentElement.remove()
-    }
-})
-
-const iop = [{
-    name: 'NAME1',
-    owner: {
-        login: 'LOGIN1'
-    },
-    stargazersCount: 123
-}, {
-    name: 'NAME2',
-    owner: {
-        login: 'LOGIN2'
-    },
-    stargazersCount: 123
-}, {
-    name: 'NAME3',
-    owner: {
-        login: 'LOGIN3'
-    },
-    stargazersCount: 123
-}]
-
-showReposList(iop)
+cardsContainerElement.addEventListener('click', closeRepoCard)
