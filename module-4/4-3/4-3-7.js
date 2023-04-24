@@ -50,6 +50,7 @@ const createRepoCard = (evt) => {
         repoCard.append(closeButtonElement)
         repoCard.append(repoName, repoOwner, repoStars)
         cardsContainerElement.append(repoCard)
+        searchFieldElement.value = ''
     }
 }
 
@@ -68,7 +69,7 @@ const createSearchResultItem = (repo) => {
 }
 
 const showReposList = (reposList) => {
-    dropDownMenuElement.innerHTML = ""
+    dropDownMenuElement.innerHTML = ''
     reposList.forEach((repo) => {
         createSearchResultItem(repo)
 })}
@@ -81,7 +82,7 @@ const searchFieldHandler = (evt) => {
                 showReposList(reposList)
             })
     } else {
-        dropDownMenuElement.innerHTML = ""
+        dropDownMenuElement.innerHTML = ''
     }
 }
 
