@@ -18,21 +18,38 @@ const debounce = (fn, debounceTime) => {
 };
 
 const getRepos = async (repoName) => {
-    const response = await fetch(`https://api.github.com/search/repositories?q=${repoName}`)
-    const data = await response.json()
-    const firstRepos = []
-    for (let i = 0; i < DROP_DOWN_REPOS_COUNT; i++) {
-        if (!data.items[i]) {
-           break
+    try {
+        const response = await fetch(`https://api.github.com/search/repositories?q=${repoName}`)
+        if (!response.ok) {
+            throw new Error(`Ошибка при получении данных, статус ${response.status} - ${response.statusText}`)
         }
-        firstRepos.push(data.items[i])
+        const data = await response.json()
+        const firstRepos = []
+        for (let i = 0; i < DROP_DOWN_REPOS_COUNT; i++) {
+            if (!data.items[i]) {
+                break
+            }
+            firstRepos.push(data.items[i])
+        }
+        return firstRepos
+    } catch (error) {
+        throw new Error(error)
     }
-    return firstRepos
 }
 
+const showLoadErrorMessage = () => {
+    const errorMessageContainerElement = document.createElement('div');
+    const errorMessageTextElement = document.createElement('p');
+    errorMessageTextElement.textContent = `Загрузка списка репозиториев не удалась, попробуйте обновить страницу или ввести запрос еще раз.`;
+    errorMessageContainerElement.classList.add('load-error-message');
+    errorMessageContainerElement.append(errorMessageTextElement);
+    dropDownMenuElement.append(errorMessageContainerElement);
+    searchFieldElement.value = ''
+};
+
 const createRepoCard = (evt) => {
-    const datasetName = currentRepos.find((repo) => repo.id === Number(evt.target.dataset.repoId))
-    if (datasetName) {
+    if (evt.target.dataset.repoId) {
+        const datasetName = currentRepos.find((repo) => repo.id === Number(evt.target.dataset.repoId))
         let {name, owner: {login}, stargazers_count} = datasetName
         const repoCard = document.createElement('div');
         const repoName = document.createElement('p');
@@ -80,6 +97,13 @@ const searchFieldHandler = (evt) => {
             .then((reposList) => {
                 currentRepos = reposList
                 showReposList(reposList)
+            })
+            .catch(error => {
+                dropDownMenuElement.innerHTML = ''
+                const errorMessageElement = document.querySelector('.load-error-message')
+                if (!errorMessageElement) {
+                    showLoadErrorMessage(error)
+                }
             })
     } else {
         dropDownMenuElement.innerHTML = ''
