@@ -1,5 +1,5 @@
 const DEBOUNCE_TIME = 500
-const DROP_DOWN_REPOS_COUNT = 5
+const REPOS_COUNT = 5
 const searchFieldElement = document.querySelector('.search-field')
 const cardsContainerElement = document.querySelector('.cards-container')
 const dropDownMenuElement = document.querySelector('.search-result')
@@ -19,19 +19,12 @@ const debounce = (fn, debounceTime) => {
 
 const getRepos = async (repoName) => {
     try {
-        const response = await fetch(`https://api.github.com/search/repositories?q=${repoName}`)
+        const response = await fetch(`https://api.github.com/search/repositories?q=${repoName}&per_page=${REPOS_COUNT}`)
         if (!response.ok) {
             throw new Error(`Ошибка при получении данных, статус ${response.status} - ${response.statusText}`)
         }
         const data = await response.json()
-        const firstRepos = []
-        for (let i = 0; i < DROP_DOWN_REPOS_COUNT; i++) {
-            if (!data.items[i]) {
-                break
-            }
-            firstRepos.push(data.items[i])
-        }
-        return firstRepos
+        return data.items
     } catch (error) {
         throw new Error(error)
     }
