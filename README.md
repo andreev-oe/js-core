@@ -1,4 +1,4 @@
-## Регистраиця:
+## Регистрация:
 ![Registration](img/Registration.png)
 ## Авторизация:
 ![Authentication](img/Authentication.png)
