@@ -44,22 +44,15 @@ const createRepoCard = (evt) => {
     if (evt.target.dataset.repoId) {
         const datasetName = currentRepos.find((repo) => repo.id === Number(evt.target.dataset.repoId))
         let {name, owner: {login}, stargazers_count} = datasetName
-        const repoCard = document.createElement('div');
-        const repoName = document.createElement('p');
-        const repoOwner = document.createElement('p');
-        const repoStars = document.createElement('p');
-        const closeButtonElement = document.createElement('div')
-
-        closeButtonElement.classList.add('repo-card-close')
-        repoCard.classList.add('repo-card')
-
-        repoName.textContent = `Name: ${name}`
-        repoOwner.textContent = `Owner: ${login}`
-        repoStars.textContent = `Stars: ${stargazers_count}`
-
-        repoCard.append(closeButtonElement)
-        repoCard.append(repoName, repoOwner, repoStars)
-        cardsContainerElement.append(repoCard)
+        const repoCard = `
+            <div class="repo-card">
+                <div class="repo-card-close"></div>
+                <p>Name: ${name}</p>
+                <p>Owner: ${login}</p>
+                <p>Stars: ${stargazers_count}</p>
+            </div>
+        `
+        cardsContainerElement.insertAdjacentHTML('beforeend', repoCard)
         searchFieldElement.value = ''
     }
 }
