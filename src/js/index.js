@@ -3,6 +3,8 @@ const REPOS_COUNT = 5
 const searchFieldElement = document.querySelector('.search-field')
 const cardsContainerElement = document.querySelector('.cards-container')
 const dropDownMenuElement = document.querySelector('.search-result')
+const loadError = `Загрузка списка репозиториев не удалась, попробуйте обновить страницу или ввести запрос еще раз.`
+const noReposError = `Нет репозиториев по указанному запросу. Поробуйте использовать другие ключевые слова.`
 let currentRepos
 
 const debounce = (fn, debounceTime) => {
@@ -30,15 +32,24 @@ const getRepos = async (repoName) => {
     }
 }
 
-const showLoadErrorMessage = () => {
+const showErrorMessage = (errorType) => {
     const errorMessageContainerElement = document.createElement('div');
     const errorMessageTextElement = document.createElement('p');
-    errorMessageTextElement.textContent = `Загрузка списка репозиториев не удалась, попробуйте обновить страницу или ввести запрос еще раз.`;
+    switch (errorType) {
+        case 'loadError':
+            errorMessageTextElement.textContent = loadError;
+            break
+        case 'noReposError':
+            errorMessageTextElement.textContent = noReposError;
+            break
+        default:
+            errorMessageTextElement.textContent = loadError;
+            break
+    }
     errorMessageContainerElement.classList.add('load-error-message');
     errorMessageContainerElement.append(errorMessageTextElement);
     dropDownMenuElement.append(errorMessageContainerElement);
     dropDownMenuElement.classList.add('js-shown')
-    searchFieldElement.value = ''
 };
 
 const createRepoCard = (evt) => {
@@ -77,9 +88,14 @@ const createSearchResultItem = (repo) => {
 
 const showReposList = (reposList) => {
     dropDownMenuElement.innerHTML = ''
-    reposList.forEach((repo) => {
-        createSearchResultItem(repo)
-})}
+    if (reposList.length > 0) {
+        reposList.forEach((repo) => {
+            createSearchResultItem(repo)
+        })
+    } else {
+        showErrorMessage('noReposError')
+    }
+}
 
 const searchFieldHandler = (evt) => {
     if (evt.target.value.trim()) {
@@ -88,11 +104,11 @@ const searchFieldHandler = (evt) => {
                 currentRepos = reposList
                 showReposList(reposList)
             })
-            .catch(error => {
+            .catch(() => {
                 dropDownMenuElement.innerHTML = ''
                 const errorMessageElement = document.querySelector('.load-error-message')
                 if (!errorMessageElement) {
-                    showLoadErrorMessage(error)
+                    showErrorMessage('loadError')
                 }
             })
     } else {
