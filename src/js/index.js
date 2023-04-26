@@ -54,6 +54,7 @@ const createRepoCard = (evt) => {
         `
         cardsContainerElement.insertAdjacentHTML('beforeend', repoCard)
         searchFieldElement.value = ''
+        dropDownMenuElement.innerHTML = ''
     }
 }
 
