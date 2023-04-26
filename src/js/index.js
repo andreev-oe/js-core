@@ -2,7 +2,7 @@ const DEBOUNCE_TIME = 500
 const REPOS_COUNT = 5
 const URL = 'https://api.github.com/search/repositories'
 const CssClass = {
-    LOAD: 'load-error-message',
+    LOAD_ERROR: 'load-error-message',
     SHOW_ELEMENT: 'js-shown',
     REPO_CARD: 'repo-card',
     REPO_NAME: 'search__repo-name',
@@ -68,7 +68,7 @@ const showErrorMessage = (errorType) => {
             errorMessageTextElement.textContent = ErrorMessage.LOAD;
             break
     }
-    errorMessageContainerElement.classList.add(CssClass.LOAD);
+    errorMessageContainerElement.classList.add(CssClass.LOAD_ERROR);
     errorMessageContainerElement.append(errorMessageTextElement);
     dropDownMenuElement.append(errorMessageContainerElement);
     dropDownMenuElement.classList.add(CssClass.SHOW_ELEMENT)
@@ -128,7 +128,7 @@ const searchFieldHandler = (evt) => {
             })
             .catch(() => {
                 dropDownMenuElement.innerHTML = ''
-                const errorMessageElement = document.querySelector('.load-error-message')
+                const errorMessageElement = document.querySelector(CssClass.LOAD_ERROR)
                 if (!errorMessageElement) {
                     showErrorMessage(ErrorType.LOAD)
                 }
