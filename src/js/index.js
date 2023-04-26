@@ -37,6 +37,7 @@ const showLoadErrorMessage = () => {
     errorMessageContainerElement.classList.add('load-error-message');
     errorMessageContainerElement.append(errorMessageTextElement);
     dropDownMenuElement.append(errorMessageContainerElement);
+    dropDownMenuElement.classList.add('js-shown')
     searchFieldElement.value = ''
 };
 
@@ -55,6 +56,7 @@ const createRepoCard = (evt) => {
         cardsContainerElement.insertAdjacentHTML('beforeend', repoCard)
         searchFieldElement.value = ''
         dropDownMenuElement.innerHTML = ''
+        dropDownMenuElement.classList.remove('js-shown')
     }
 }
 
@@ -70,6 +72,7 @@ const createSearchResultItem = (repo) => {
     repoNameElement.classList.add('repo-name')
     repoNameElement.dataset.repoId = repo.id
     dropDownMenuElement.append(repoNameElement)
+    dropDownMenuElement.classList.add('js-shown')
 }
 
 const showReposList = (reposList) => {
@@ -94,6 +97,7 @@ const searchFieldHandler = (evt) => {
             })
     } else {
         dropDownMenuElement.innerHTML = ''
+        dropDownMenuElement.classList.remove('js-shown')
     }
 }
 
