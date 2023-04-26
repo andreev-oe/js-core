@@ -5,6 +5,10 @@ body {
 .content-wrapper {
     width:100vw;
 }
+.search-wrapper {
+    margin: 0 25px;
+    position: relative;
+}
 .search {
     scrollbar-gutter: stable both-edges;
     margin: 25px auto;
@@ -14,21 +18,17 @@ body {
     background-color: lightgray;
     border-radius: 10px;
 }
-.search-field {
+.search__field {
     width: 90%;
     padding: 10px 15px;
     margin: 25px 0 0 25px;
     border-radius: 10px;
     border: none;
 }
-.search-field:focus {
+.search__field:focus {
     outline: 1px solid #65CDF9;
 }
-.search-wrapper {
-    margin: 0 25px;
-    position: relative;
-}
-.search-result {
+.search__result {
     outline: 1px solid #65CDF9;
     z-index: 1;
     position: absolute;
@@ -43,14 +43,14 @@ body {
     border: none;
     border-radius: 10px;
 }
-.repo-name {
+.search__repo-name {
     list-style: none;
     padding: 10px;
     border-top: none;
     cursor: pointer;
     border-radius: 10px;
 }
-.repo-name:hover {
+.search__repo-name:hover {
     background-color: #65CDF9;
 }
 .repo-card {
@@ -70,7 +70,7 @@ body {
 .repo-card:last-child {
     margin-bottom: 0;
 }
-.repo-card-close {
+.repo-card__close-btn {
     cursor: pointer;
     position: absolute;
     top: 10px;
@@ -79,10 +79,10 @@ body {
     height: 30px;
     border-radius: 5px;
 }
-.repo-card-close:hover {
+.repo-card__close-btn:hover {
     background-color: lightpink;
 }
-.repo-card-close:before {
+.repo-card__close-btn:before {
     content: "";
     position: absolute;
     top: 0;

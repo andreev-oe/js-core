@@ -1,10 +1,32 @@
 const DEBOUNCE_TIME = 500
 const REPOS_COUNT = 5
-const searchFieldElement = document.querySelector('.search-field')
+const URL = 'https://api.github.com/search/repositories'
+const CssClass = {
+    LOAD: 'load-error-message',
+    SHOW_ELEMENT: 'js-shown',
+    REPO_CARD: 'repo-card',
+    REPO_NAME: 'search__repo-name',
+    CLOSE_BTN: 'repo-card__close-btn'
+}
+const HtmlElement = {
+    DIV: 'div',
+    P: 'p',
+    LI: 'li'
+}
+const ErrorMessage = {
+    LOAD: 'Загрузка списка репозиториев не удалась, попробуйте обновить страницу или ввести запрос еще раз.',
+    REPO_NOT_FOUND: 'Нет репозиториев по указанному запросу. Поробуйте использовать другие ключевые слова.'
+}
+const ErrorType = {
+    LOAD: 'loadError',
+    REPO_NOT_FOUND: 'noReposError'
+}
+const InsertPosition = {
+    BEFORE_END: 'beforeend'
+}
+const searchFieldElement = document.querySelector('.search__field')
 const cardsContainerElement = document.querySelector('.cards-container')
-const dropDownMenuElement = document.querySelector('.search-result')
-const loadError = `Загрузка списка репозиториев не удалась, попробуйте обновить страницу или ввести запрос еще раз.`
-const noReposError = `Нет репозиториев по указанному запросу. Поробуйте использовать другие ключевые слова.`
+const dropDownMenuElement = document.querySelector('.search__result')
 let currentRepos
 
 const debounce = (fn, debounceTime) => {
@@ -19,9 +41,9 @@ const debounce = (fn, debounceTime) => {
     }
 };
 
-const getRepos = async (repoName) => {
+const getRepos = async (url, repoName) => {
     try {
-        const response = await fetch(`https://api.github.com/search/repositories?q=${repoName}&per_page=${REPOS_COUNT}`)
+        const response = await fetch(`${url}?q=${repoName}&per_page=${REPOS_COUNT}`)
         if (!response.ok) {
             throw new Error(`Ошибка при получении данных, статус ${response.status} - ${response.statusText}`)
         }
@@ -33,23 +55,23 @@ const getRepos = async (repoName) => {
 }
 
 const showErrorMessage = (errorType) => {
-    const errorMessageContainerElement = document.createElement('div');
-    const errorMessageTextElement = document.createElement('p');
+    const errorMessageContainerElement = document.createElement(HtmlElement.DIV);
+    const errorMessageTextElement = document.createElement(HtmlElement.P);
     switch (errorType) {
-        case 'loadError':
-            errorMessageTextElement.textContent = loadError;
+        case ErrorType.LOAD:
+            errorMessageTextElement.textContent = ErrorMessage.LOAD;
             break
-        case 'noReposError':
-            errorMessageTextElement.textContent = noReposError;
+        case ErrorType.REPO_NOT_FOUND:
+            errorMessageTextElement.textContent = ErrorMessage.REPO_NOT_FOUND;
             break
         default:
-            errorMessageTextElement.textContent = loadError;
+            errorMessageTextElement.textContent = ErrorMessage.LOAD;
             break
     }
-    errorMessageContainerElement.classList.add('load-error-message');
+    errorMessageContainerElement.classList.add(CssClass.LOAD);
     errorMessageContainerElement.append(errorMessageTextElement);
     dropDownMenuElement.append(errorMessageContainerElement);
-    dropDownMenuElement.classList.add('js-shown')
+    dropDownMenuElement.classList.add(CssClass.SHOW_ELEMENT)
 };
 
 const createRepoCard = (evt) => {
@@ -57,49 +79,49 @@ const createRepoCard = (evt) => {
         const datasetName = currentRepos.find((repo) => repo.id === Number(evt.target.dataset.repoId))
         let {name, owner: {login}, stargazers_count} = datasetName
         const repoCard = `
-            <div class="repo-card">
-                <div class="repo-card-close"></div>
+            <div class=${CssClass.REPO_CARD}>
+                <div class=${CssClass.CLOSE_BTN}></div>
                 <p>Name: ${name}</p>
                 <p>Owner: ${login}</p>
                 <p>Stars: ${stargazers_count}</p>
             </div>
         `
-        cardsContainerElement.insertAdjacentHTML('beforeend', repoCard)
+        cardsContainerElement.insertAdjacentHTML(InsertPosition.BEFORE_END, repoCard)
         searchFieldElement.value = ''
         dropDownMenuElement.innerHTML = ''
-        dropDownMenuElement.classList.remove('js-shown')
+        dropDownMenuElement.classList.remove(CssClass.SHOW_ELEMENT)
     }
 }
 
 const closeRepoCard = (evt) => {
-    if (evt.target.classList.value === 'repo-card-close') {
+    if (evt.target.classList.value === CssClass.CLOSE_BTN) {
         evt.target.parentElement.remove()
     }
 }
 
 const createSearchResultItem = (repo) => {
-    const repoNameElement = document.createElement('li')
+    const repoNameElement = document.createElement(HtmlElement.LI)
     repoNameElement.textContent = repo.name
-    repoNameElement.classList.add('repo-name')
+    repoNameElement.classList.add(CssClass.REPO_NAME)
     repoNameElement.dataset.repoId = repo.id
     dropDownMenuElement.append(repoNameElement)
-    dropDownMenuElement.classList.add('js-shown')
+    dropDownMenuElement.classList.add(CssClass.SHOW_ELEMENT)
 }
 
 const showReposList = (reposList) => {
     dropDownMenuElement.innerHTML = ''
-    if (reposList.length > 0) {
+    if (reposList.length) {
         reposList.forEach((repo) => {
             createSearchResultItem(repo)
         })
     } else {
-        showErrorMessage('noReposError')
+        showErrorMessage(ErrorType.REPO_NOT_FOUND)
     }
 }
 
 const searchFieldHandler = (evt) => {
     if (evt.target.value.trim()) {
-        getRepos(evt.target.value)
+        getRepos(URL, evt.target.value)
             .then((reposList) => {
                 currentRepos = reposList
                 showReposList(reposList)
@@ -108,12 +130,12 @@ const searchFieldHandler = (evt) => {
                 dropDownMenuElement.innerHTML = ''
                 const errorMessageElement = document.querySelector('.load-error-message')
                 if (!errorMessageElement) {
-                    showErrorMessage('loadError')
+                    showErrorMessage(ErrorType.LOAD)
                 }
             })
     } else {
         dropDownMenuElement.innerHTML = ''
-        dropDownMenuElement.classList.remove('js-shown')
+        dropDownMenuElement.classList.remove(CssClass.SHOW_ELEMENT)
     }
 }
 
