@@ -1,0 +1,1 @@
+## [Ссылка на опубликованную версию](https://andreev-oe.github.io/JS-core/)
