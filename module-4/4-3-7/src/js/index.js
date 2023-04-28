@@ -1,6 +1,6 @@
 const DEBOUNCE_TIME = 500
 const REPOS_COUNT = 5
-const URL = 'https://api.github.com/search/repositories'
+const GIT_SEARCH_URL = new URL('https://api.github.com/search/repositories')
 const CssClass = {
     LOAD_ERROR: 'load-error-message',
     SHOW_ELEMENT: 'js-shown',
@@ -41,9 +41,11 @@ const debounce = (fn, debounceTime) => {
     }
 };
 
-const getRepos = async (url, repoName) => {
+const getRepos = async (url, resultsCount, repoName) => {
+    url.searchParams.set('q', repoName)
+    url.searchParams.set('per_page', `${resultsCount}`)
     try {
-        const response = await fetch(`${url}?q=${repoName}&per_page=${REPOS_COUNT}`)
+        const response = await fetch(url)
         if (!response.ok) {
             throw new Error(`Ошибка при получении данных, статус ${response.status} - ${response.statusText}`)
         }
@@ -121,7 +123,7 @@ const showReposList = (reposList) => {
 
 const searchFieldHandler = (evt) => {
     if (evt.target.value.trim()) {
-        getRepos(URL, evt.target.value)
+        getRepos(GIT_SEARCH_URL, REPOS_COUNT, evt.target.value)
             .then((reposList) => {
                 currentRepos = reposList
                 showReposList(reposList)
